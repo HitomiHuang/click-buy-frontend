@@ -6,5 +6,10 @@ export default {
     return apiHelper.get('/products', {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+  getProduct(productId){
+    return apiHelper.get(`/products/${productId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
 }
