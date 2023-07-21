@@ -20,6 +20,7 @@ export default {
 <style>
 body{
   min-width:1220px;
+  background: #F5F5F5;
 }
 .wrapper{
   max-width: 1200px;

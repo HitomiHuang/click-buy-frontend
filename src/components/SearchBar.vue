@@ -1,6 +1,6 @@
 <template>
   <div class="search-block">
-    <div class="logo"></div>
+    <router-link to="/" class="logo"></router-link>
     <div class="search-bar">
       <input type="text" class="search-input" placeholder="請輸入關鍵字">
       <button class=" btn btn-primary search-btn"><i class="fa-solid fa-magnifying-glass d-block"></i></button>
