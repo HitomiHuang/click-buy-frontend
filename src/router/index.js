@@ -25,6 +25,11 @@ const routes = [
     component: Products
   },
   {
+    path: '/search',
+    name: 'search',
+    component: () => import('../views/SearchView.vue')
+  },
+  {
     path: '/:pathMatch(.*)',
     name: 'not-found',
     component: NotFound
