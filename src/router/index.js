@@ -7,7 +7,7 @@ const routes = [
   {
     path: '/',
     name: 'root',
-    redirect: '/login'
+    redirect: '/products'
   },
   {
     path: '/login',
@@ -23,6 +23,11 @@ const routes = [
     path: '/products',
     name: 'products',
     component: Products
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('../views/SearchView.vue')
   },
   {
     path: '/:pathMatch(.*)',
