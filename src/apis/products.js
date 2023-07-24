@@ -13,9 +13,10 @@ export default {
     })
   },
   searchProducts(keyword, orderBy, minPrice, maxPrice) {
-    const data = { keyword, orderBy, minPrice, maxPrice}
+    const data = { keyword, orderBy, minPrice, maxPrice }
     return apiHelper.post('/products/search', data, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   }
+
 }
