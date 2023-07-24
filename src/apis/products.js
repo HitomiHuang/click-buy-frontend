@@ -7,8 +7,14 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
-  getProduct(productId){
+  getProduct(productId) {
     return apiHelper.get(`/products/${productId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  searchProducts(keyword, orderBy, minPrice, maxPrice) {
+    const data = { keyword, orderBy, minPrice, maxPrice}
+    return apiHelper.post('/products/search', data, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   }

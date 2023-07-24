@@ -55,11 +55,11 @@ export default {
 }
 .card {
   width: 190px;
-  height: 262px;
+  height: 380px;
   border-radius: 3px;
 }
 .card-image {
-  height: 170px;
+  height: 210px;
 }
 .card-body {
   padding: 10px;
