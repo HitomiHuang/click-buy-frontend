@@ -12,9 +12,23 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
-  searchProducts(keyword, orderBy, minPrice, maxPrice) {
-    const data = { keyword, orderBy, minPrice, maxPrice }
-    return apiHelper.post('/products/search', data, {
+  searchProducts(filterData) {
+    return apiHelper.post('/products/search', filterData, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  getProductsByShop(){
+    return apiHelper.get('/products/seller', {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  addProduct(product){
+    return apiHelper.post('/products/add', product, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  editProduct(product){
+    return apiHelper.put('/products/edit', product, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   }

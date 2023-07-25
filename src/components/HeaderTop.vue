@@ -3,23 +3,34 @@
     <div class="wrapper">
       <nav>
         <div class="nav-items left">
-          <a href="#">賣家中心</a>
-          <div class="line"></div>
+          <template v-if="role==='seller'">
+            <router-link :to="{ name: 'seller', params: { shopId } }"
+              >賣家中心</router-link
+            >
+            <div class="line"></div>
+          </template>
           <a href="#">追蹤我們</a>
         </div>
         <div class="nav-items right">
           <a href="#">幫助中心</a>
-          <a href="#" class="nav-item">註冊</a>
-          <div class="line"></div>
-          <a href="#">登入</a>
-          <!-- <a href="#" class="nav-item">
-        <img src="#" alt="">
-        <span>userName</span>
-      </a> -->
+          <template v-if="!isAuthenticated">
+            <a href="#" class="nav-item">註冊</a>
+            <div class="line"></div>
+            <router-link to="/login">登入</router-link>
+          </template>
+          <template v-else>
+            <div class="line"></div>
+            <a href="#">
+              <img :src="userImage" alt="" />
+              <span>{{ userName }}, 你好</span>
+            </a>
+            <div class="line"></div>
+            <a href="#" @click="logout">登出</a>
+          </template>
         </div>
       </nav>
       <div class="search-block">
-        <router-link to="/" class="logo"></router-link>
+        <router-link to="/products" class="logo"></router-link>
         <div class="search-bar">
           <input
             type="text"
@@ -34,7 +45,7 @@
             <i class="fa-solid fa-magnifying-glass d-block"></i>
           </button>
         </div>
-        <div class="cart">
+        <div class="cart" v-if="role==='buyer'">
           <router-link to="/cart"
             ><i class="fa-solid fa-cart-shopping fa-xl d-block"></i
           ></router-link>
@@ -45,6 +56,7 @@
 </template>
 <script>
 import { computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   props: {
@@ -55,18 +67,30 @@ export default {
   },
   emits: ["update:inputText", "search"],
   setup(props, { emit }) {
+    const store = useStore();
+
     const keyword = computed({
       get: () => props.inputText,
       set: (val) => emit("update:inputText", val),
     });
 
     const searchProducts = () => {
-      emit("search")
+      emit("search");
+    };
+
+    const logout = () => {
+      localStorage.removeItem('token')
     }
 
     return {
       keyword,
-      searchProducts
+      searchProducts,
+      logout,
+      userImage: computed(() => store.state.currentUser.avatar),
+      userName: computed(() => store.state.currentUser.name),
+      role: computed(() => store.state.currentUser.role),
+      shopId: computed(() => store.state.currentUser.shopId),
+      isAuthenticated: computed(() => store.state.isAuthenticated),
     };
   },
 };

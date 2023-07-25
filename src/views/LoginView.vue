@@ -57,11 +57,13 @@ import authorizationAPI from "../apis/authorization";
 import { Toast } from "../utils/helpers";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 const account = ref("");
 const password = ref("");
 const isProcessing = ref(false);
 const router = useRouter();
+const store = useStore();
 
 async function handleSubmit() {
   try {
@@ -80,8 +82,14 @@ async function handleSubmit() {
       password: password.value,
     });
 
-    const { data } = response.data;
+    const { data, status } = response.data;
+
+    if(status !=='success'){
+      throw new Error(status)
+    }
     localStorage.setItem("token", data.token);
+    console.log(data.user)
+    store.commit('setCurrentUser', data.user)
 
     router.push("/products");
   } catch (err) {
@@ -91,7 +99,6 @@ async function handleSubmit() {
       title: "請確認您輸入了正確的帳號密碼",
     });
     isProcessing.value = false;
-    console.log("error", err?.response?.data);
   }
 }
 </script>
