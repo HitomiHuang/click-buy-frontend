@@ -3,41 +3,98 @@
     <table>
       <thead>
         <tr>
-          <th class="check-box"><input type="checkbox" /></th>
+          <th class="check-box"></th>
           <th class="product-info">商品</th>
+          <th class="product-price">單價</th>
           <th class="product-amount">數量</th>
+          <th class="total-count">總計</th>
           <th class="action">操作</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="check-box"><input type="checkbox" /></td>
-          <td class="product-info">productName</td>
-          <td class="product-amount">1</td>
+        <tr v-for="product in carts" :key="product.productId">
+          <td class="check-box">
+            <input
+              type="checkbox"
+              :id="product.productId"
+              :value="product.productId"
+              v-model="checkedProducts"
+            />
+          </td>
+          <td class="product-info">
+            <div class="product-img">
+              <img :src="product.Product.image" alt="" />
+            </div>
+            <div class="product-des">
+              {{ product.Product.name }}
+            </div>
+          </td>
+          <td class="product-price">${{ product.Product.price }}</td>
+          <td class="product-amount">{{ product.amount }}</td>
+          <td class="total-count">
+            ${{ product.Product.price * product.amount }}
+          </td>
           <td class="action">
             <button type="button" class="btn btn-danger">刪除</button>
           </td>
         </tr>
       </tbody>
     </table>
+    <div class="totalBlock">
+      <button class="btn btn-primary" @click.prevent.stop="buyProducts">
+        確認購買
+      </button>
+    </div>
   </div>
 </template>
 <script>
-// import { onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 // import { useRoute } from "vue-router";
-// import { Toast } from "../utils/helpers";
-// import cartAPI from "./../apis/carts";
+import { Toast } from "../utils/helpers";
+import cartAPI from "./../apis/carts";
 
 export default {
   setup() {
-    // const cart = ref([]);
-    // async function fetchCart() {
-    //   cart.value = await cartAPI.getCart();
-    // }
+    const carts = ref([]);
+    const checkedProducts = ref([]);
+
+    const fetchCart = async () => {
+      const response = await cartAPI.getCart();
+      carts.value = response.data.data.carts;
+    };
+
+    const buyProducts = async () => {
+      try{
+        const buyContent = []
+        for(let i in carts.value){
+          let product = carts.value[i]
+          for(let j in checkedProducts.value){
+            let checkedProduct = checkedProducts.value[j]
+            if(product.productId === checkedProduct){
+              buyContent.push(product)
+            }
+          }
+        }
+    
+        const response = await cartAPI.buyProducts(buyContent);
+        console.log(response);
+      }catch(err){
+        Toast.fire({
+          icon: "error",
+          title: "購買失敗，請稍後再試",
+        });
+      }
+    };
+
+    onMounted(() => {
+      fetchCart();
+    });
+
+    return { carts, checkedProducts, buyProducts };
   },
 };
 </script>
-<style>
+<style scoped>
 table {
   margin-top: 40px;
   width: 100%;
@@ -64,6 +121,7 @@ tr {
   flex: 1;
 }
 .product-info {
+  display: flex;
   flex: 8;
 }
 .product-amount {
@@ -71,5 +129,8 @@ tr {
 }
 .action {
   flex: 2;
+}
+.product-img {
+  padding: 10px;
 }
 </style>

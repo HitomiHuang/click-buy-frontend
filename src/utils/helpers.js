@@ -1,10 +1,12 @@
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
-const baseURL = 'http://localhost:3000/'
+const baseURL = 'https://click-buy-backend-42e398391374.herokuapp.com/'
+// const baseURL = 'http://localhost:3000/'
 
 export const apiHelper = axios.create({
-  baseURL
+  baseURL,
+  timeout: 5000
 })
 
 export const Toast = Swal.mixin({
