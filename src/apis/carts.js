@@ -12,7 +12,12 @@ export default {
     })
   },
   getCart() {
-    return apiHelper.get('/cart', {
+    return apiHelper.get('/carts', {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  buyProducts(carts) {
+    return apiHelper.put('/carts/buy', { carts:  [...carts]  }, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   }
