@@ -77,6 +77,7 @@
 </template>
 <script>
 import { ref } from "vue";
+import { Toast } from "../utils/helpers";
 import productsAPI from "./../apis/products";
 
 export default {
@@ -101,9 +102,21 @@ export default {
     };
 
     const handleSubmit = async(e) => {
-      const form = e.target;
-      const formData = new FormData(form);
-      await productsAPI.addProduct(formData)
+      try{
+        const form = e.target;
+        const formData = new FormData(form);
+        await productsAPI.addProduct(formData)
+        Toast.fire({
+          icon: "success",
+          title: "上架商品成功",
+        });
+        
+      }catch(err){
+        Toast.fire({
+          icon: "error",
+          title: "新增商品失敗，請稍後再試",
+        });
+      }
     };
 
     return { product, handleFileChange, handleSubmit };
