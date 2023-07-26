@@ -57,6 +57,7 @@
 <script>
 import { computed } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default {
   props: {
@@ -68,6 +69,7 @@ export default {
   emits: ["update:inputText", "search"],
   setup(props, { emit }) {
     const store = useStore();
+    const router = useRouter()
 
     const keyword = computed({
       get: () => props.inputText,
@@ -80,6 +82,7 @@ export default {
 
     const logout = () => {
       localStorage.removeItem('token')
+      router.push({path:'/login'})
     }
 
     return {

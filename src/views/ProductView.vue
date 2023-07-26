@@ -8,37 +8,55 @@
       <div class="product-price">
         <span>${{ product.price }}</span>
       </div>
-      <div>
-        <span>數量</span>
-        <button>-</button>
-        <input type="text" class="amount-input" :value="amount">
-        <button>+</button>
-        <span>還剩下{{ product.amount }}件</span>
-        <button class="btn btn-primary add-to-cart" @click.prevent.stop="addToCart">加入購物車</button>
+      <div class="amount-group">
+        <span class="amount-label">數量</span>
+        <table class="mx-3">
+          <tr>
+            <td>
+              <span class="minus-btn" @click.prevent.stop="minusAmount">-</span>
+            </td>
+            <td><input type="text" class="amount-input" v-model="amount" /></td>
+            <td>
+              <span class="plus-btn" @click.prevent.stop="plusAmount">+</span>
+            </td>
+          </tr>
+        </table>
+        <span class="rest-amount-label">還剩下{{ product.restAmount }}件</span>
       </div>
+      <button
+        class="btn btn-primary add-to-cart mt-5"
+        @click.prevent.stop="addToCart"
+      >
+        加入購物車
+      </button>
     </div>
   </div>
   <div class="shop-section">
-    <div class="shop-logo">
-      {{ shop.name }}
+    <div>
+      <div class="shop-logo">
+        <img :src="shop.logo" alt="">
+      </div>
+      <div class="shop-info">
+        {{ shop.name }}
+      </div>
     </div>
-    <div class="shop-info"></div>
   </div>
 </template>
 <script>
-import { onMounted, ref} from "vue";
+import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { Toast } from "../utils/helpers";
 import productsAPI from "./../apis/products";
-import cartsAPI from "./../apis/carts"
+import cartsAPI from "./../apis/carts";
 
 export default {
   setup() {
     const product = ref({});
     const shop = ref({});
-    const amount = 1;
+    const amount = ref(1);
     const route = useRoute();
     const productId = route.params.productId;
+
     async function fetchProducts() {
       try {
         const response = await productsAPI.getProduct(productId);
@@ -47,29 +65,44 @@ export default {
       } catch (err) {
         Toast.fire({
           icon: "error",
-          title: "無法取得餐廳資料，請稍後再試",
+          title: "無法取得商品資料，請稍後再試",
         });
       }
     }
 
-    const addToCart = async() => {
-      try{
-        
-        const response = await cartsAPI.addToCart(productId, amount);
-        console.log(response)
-      }catch(err){
+    const addToCart = async () => {
+      try {
+        await cartsAPI.addToCart(productId, amount);
+
+        Toast.fire({
+          icon: "success",
+          title: "成功加入購物車",
+        });
+      } catch (err) {
         Toast.fire({
           icon: "error",
           title: "加入購物車失敗，請稍後再試",
         });
       }
-    }
+    };
+
+    const plusAmount = () => {
+      if (product.value.restAmount > amount.value) {
+        amount.value = Number(amount.value) + 1;
+      }
+    };
+
+    const minusAmount = () => {
+      if (amount.value > 1) {
+        amount.value = Number(amount.value) - 1;
+      }
+    };
 
     onMounted(() => {
       fetchProducts();
     });
 
-    return { product, shop, addToCart, amount };
+    return { product, shop, addToCart, amount, plusAmount, minusAmount };
   },
 };
 </script>
@@ -81,7 +114,8 @@ export default {
   display: flex;
 }
 .shop-section {
-  height: 132px;
+  height: 160px;
+  padding: 10px;
   background: white;
   margin: 15px 0;
 }
@@ -97,23 +131,52 @@ export default {
 .img {
   width: 100%;
   height: 100%;
-  object-fit:cover;
+  object-fit: cover;
   object-position: 50% 50%;
 }
-.product-name{
+.product-name {
   font-size: 30px;
 }
-.product-price{
-  background: #FAFAFA;
+.product-price {
+  background: #fafafa;
   margin-top: 50px;
   height: 70px;
   padding: 10px;
 }
-.product-price span{
+.product-price span {
   font-size: 36px;
-  color:#D0011B
+  color: #d0011b;
 }
-.add-to-cart{
-  display:block;
+.add-to-cart {
+  display: block;
+}
+td,
+tr {
+  border: 1px solid #eaeaeaff;
+}
+.amount-input {
+  width: 50px;
+  border: none;
+  text-align: center;
+}
+.plus-btn,
+.minus-btn {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+  width: 25px;
+  cursor: pointer;
+}
+.amount-label{
+  font-size: 20px;
+}
+.amount-group {
+  display: flex;
+  margin-top: 80px;
+  align-items: center;
+}
+.rest-amount-label{
+  color: rgb(184, 183, 183);
 }
 </style>

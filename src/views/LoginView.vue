@@ -35,7 +35,7 @@
       </div>
 
       <button
-        class="btn btn-lg btn-primary btn-block mb-3"
+        class="btn btn-lg btn-primary btn-block mb-5"
         type="submit"
         :disable="isProcessing"
       >
@@ -47,8 +47,6 @@
           <router-link to="/signup"> Sign Up </router-link>
         </p>
       </div> -->
-
-      <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2018</p>
     </form>
   </div>
 </template>
@@ -84,12 +82,12 @@ async function handleSubmit() {
 
     const { data, status } = response.data;
 
-    if(status !=='success'){
-      throw new Error(status)
+    if (status !== "success") {
+      throw new Error(status);
     }
     localStorage.setItem("token", data.token);
-    console.log(data.user)
-    store.commit('setCurrentUser', data.user)
+    console.log(data.user);
+    store.commit("setCurrentUser", data.user);
 
     router.push("/products");
   } catch (err) {

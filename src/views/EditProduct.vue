@@ -76,8 +76,9 @@
 </template>
 <script>
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import productsAPI from "./../apis/products";
+import { Toast } from "../utils/helpers";
 
 export default {
   setup() {
@@ -90,6 +91,7 @@ export default {
     });
 
     const route = useRoute();
+    const router = useRouter();
     const productId = route.params.productId;
 
     const fetchProduct = async () => {
@@ -109,10 +111,25 @@ export default {
     };
 
     const handleSubmit = async (e) => {
-      const form = e.target;
-      const formData = new FormData(form);
-      formData.append("id", productId);
-      await productsAPI.editProduct(formData);
+      try {
+        const form = e.target;
+        const formData = new FormData(form);
+        formData.append("id", productId);
+        await productsAPI.editProduct(formData);
+        Toast.fire({
+          icon: "success",
+          title: "編輯商品成功",
+        });
+        router.push({
+          name: "seller",
+          params: { shopId: product.value.shopId },
+        });
+      } catch (err) {
+        Toast.fire({
+          icon: "error",
+          title: "編輯商品失敗，請稍後再試",
+        });
+      }
     };
 
     onMounted(() => {

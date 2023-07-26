@@ -4,13 +4,24 @@
     <div class="filter-type">
       <div
         class="filter-btn"
-        :class="{ 'active': type === 'updatedAt' }"
+        :class="{ active: type === 'updatedAt' }"
         @click.prevent.stop="changeFilterType('updatedAt')"
       >
         最新
       </div>
-      <div class="filter-btn" :class="{ 'active': type === 'soldout' }" @click.prevent.stop="changeFilterType('soldout')">最熱銷</div>
-      <select name="priceOrder" id="priceOrder" @change = "sortProducts" v-model="sortType">
+      <div
+        class="filter-btn"
+        :class="{ active: type === 'soldout' }"
+        @click.prevent.stop="changeFilterType('soldout')"
+      >
+        最熱銷
+      </div>
+      <select
+        name="priceOrder"
+        id="priceOrder"
+        @change="sortProducts"
+        v-model="sortType"
+      >
         <option value="" selected hidden>價格</option>
         <option value="1">價格：低到高</option>
         <option value="2">價格：高到低</option>
@@ -49,33 +60,44 @@ const router = useRoute();
 const keyword = router.query.keyword;
 const products = ref([]);
 const type = ref("updatedAt");
-const sortType = ref('');
+const sortType = ref("");
 
 const fetchProducts = async () => {
-  const response = await productsAPI.searchProducts({keyword});
-  products.value = response.data.data.products;
+  try {
+    const response = await productsAPI.searchProducts({ keyword });
+    products.value = response.data.data.products;
+  } catch (err) {
+    Toast.fire({
+      icon: "error",
+      title: "無法取得商品資料，請稍後再試",
+    });
+  }
 };
 
 const changeFilterType = async (selectType) => {
-  try{
-    type.value = selectType
-    const response = await productsAPI.searchProducts({keyword, selectType});
+  try {
+    type.value = selectType;
+    const response = await productsAPI.searchProducts({ keyword, selectType });
     products.value = response.data.data.products;
-  }catch(err){
+  } catch (err) {
     Toast.fire({
-          icon: "error",
-          title: "無法取得商品資料，請稍後再試",
-        });
+      icon: "error",
+      title: "無法取得商品資料，請稍後再試",
+    });
   }
 };
 
 const sortProducts = () => {
-  if(sortType.value == 1){
-    products.value.sort(function(a, b){ return a.price - b.price})
+  if (sortType.value == 1) {
+    products.value.sort(function (a, b) {
+      return a.price - b.price;
+    });
   } else {
-    products.value.sort(function(a, b){ return b.price - a.price })
+    products.value.sort(function (a, b) {
+      return b.price - a.price;
+    });
   }
-}
+};
 onMounted(() => {
   fetchProducts();
 });
@@ -142,8 +164,8 @@ select {
   color: red;
   font-size: 18px;
 }
-.active{
-  color:white;
+.active {
+  color: white;
   background: RGB(238, 77, 45);
 }
 </style>

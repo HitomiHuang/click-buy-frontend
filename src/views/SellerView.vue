@@ -32,7 +32,7 @@
           <td class="product-price">${{ product.price }}</td>
           <td class="product-amount">{{ product.restAmount }}</td>
           <td class="total-count">
-            {{ product.totalAmount - product.restAmount }}
+            {{ product.soldout }}
           </td>
           <td class="action">
             <router-link
@@ -71,6 +71,10 @@ export default {
       try{
         const product = {id: productId, status: 'disable'}
         await productsAPI.editProduct(product)
+        Toast.fire({
+          icon: "error",
+          title: "下架成功",
+        });
       }catch(err){
         Toast.fire({
           icon: "error",
@@ -133,7 +137,17 @@ tr {
   align-items: center; 
 }
 .product-img {
+  height: 300px;
   padding: 10px;
+}
+.product-img img{
+  object-fit: cover;
+  width: 300px;
+  height: 200px;
+  
+}
+.product-desc{
+  margin-left: 100px;
 }
 .btn {
   width: 100px;

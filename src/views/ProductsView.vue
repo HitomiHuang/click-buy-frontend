@@ -60,6 +60,7 @@ export default {
 }
 .card-image {
   height: 210px;
+  object-fit: cover;
 }
 .card-body {
   padding: 10px;

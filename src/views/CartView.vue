@@ -76,8 +76,12 @@ export default {
           }
         }
     
-        const response = await cartAPI.buyProducts(buyContent);
-        console.log(response);
+        await cartAPI.buyProducts(buyContent);
+
+        Toast.fire({
+          icon: "error",
+          title: "購買成功",
+        });
       }catch(err){
         Toast.fire({
           icon: "error",
