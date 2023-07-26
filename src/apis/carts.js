@@ -17,7 +17,7 @@ export default {
     })
   },
   buyProducts(carts) {
-    return apiHelper.put('/carts/buy', { carts:  [...carts]  }, {
+    return apiHelper.put('/carts/buy', { carts: [...carts] }, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   }

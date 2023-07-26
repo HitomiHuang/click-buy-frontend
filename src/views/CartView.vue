@@ -79,7 +79,7 @@ export default {
         await cartAPI.buyProducts(buyContent);
 
         Toast.fire({
-          icon: "error",
+          icon: "success",
           title: "購買成功",
         });
       }catch(err){
