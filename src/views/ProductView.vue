@@ -8,6 +8,7 @@
       <div class="product-price">
         <span>${{ product.price }}</span>
       </div>
+      <template v-if="role === 'buyer'">
       <div class="amount-group">
         <span class="amount-label">數量</span>
         <table class="mx-3">
@@ -23,18 +24,22 @@
         </table>
         <span class="rest-amount-label">還剩下{{ product.restAmount }}件</span>
       </div>
+      </template>
       <button
         class="btn btn-primary add-to-cart mt-5"
         @click.prevent.stop="addToCart"
+        v-if="role === 'buyer'"
       >
         加入購物車
       </button>
     </div>
+    
   </div>
+  
   <div class="shop-section">
     <div>
       <div class="shop-logo">
-        <img :src="shop.logo" alt="">
+        <img :src="shop.logo" alt="" />
       </div>
       <div class="shop-info">
         {{ shop.name }}
@@ -48,6 +53,8 @@ import { useRoute } from "vue-router";
 import { Toast } from "../utils/helpers";
 import productsAPI from "./../apis/products";
 import cartsAPI from "./../apis/carts";
+import { computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   setup() {
@@ -56,6 +63,7 @@ export default {
     const amount = ref(1);
     const route = useRoute();
     const productId = route.params.productId;
+    const store = useStore();
 
     async function fetchProducts() {
       try {
@@ -102,7 +110,15 @@ export default {
       fetchProducts();
     });
 
-    return { product, shop, addToCart, amount, plusAmount, minusAmount };
+    return {
+      product,
+      shop,
+      addToCart,
+      amount,
+      plusAmount,
+      minusAmount,
+      role: computed(() => store.state.currentUser.role),
+    };
   },
 };
 </script>
@@ -168,7 +184,7 @@ tr {
   width: 25px;
   cursor: pointer;
 }
-.amount-label{
+.amount-label {
   font-size: 20px;
 }
 .amount-group {
@@ -176,7 +192,7 @@ tr {
   margin-top: 80px;
   align-items: center;
 }
-.rest-amount-label{
+.rest-amount-label {
   color: rgb(184, 183, 183);
 }
 </style>
