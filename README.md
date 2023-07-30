@@ -15,6 +15,17 @@ npm run serve
 npm run build
 ```
 
+### Login Accounts
+```
+buyer
+account: buyer001
+password: titaner
+
+seller
+account: seller001
+password:titaner
+```
+
 ### Lints and fixes files
 ```
 npm run lint
